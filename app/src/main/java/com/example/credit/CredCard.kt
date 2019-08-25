@@ -29,8 +29,6 @@ class CredCard : FrameLayout {
     private var textWidth: Float = 0f
     private var textHeight: Float = 0f
 
-    var exampleDrawable: Drawable? = null
-
     constructor(context: Context) : super(context) {
         init(null, 0)
     }
@@ -60,13 +58,6 @@ class CredCard : FrameLayout {
             R.styleable.CredCard_exampleDimension,
             this.exampleDimension
         )
-
-        if (a.hasValue(R.styleable.CredCard_exampleDrawable)) {
-            exampleDrawable = a.getDrawable(
-                R.styleable.CredCard_exampleDrawable
-            )
-            exampleDrawable?.callback = this
-        }
 
         a.recycle()
 
@@ -102,17 +93,12 @@ class CredCard : FrameLayout {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // allocations per draw cycle.
         val paddingLeft = paddingLeft
         val paddingTop = paddingTop
-        val paddingRight = paddingRight
         val paddingBottom = paddingBottom
-
-        val contentWidth = width - paddingLeft - paddingRight
         val contentHeight = height - paddingTop - paddingBottom
 
         this.exampleString.let {
-            // Draw the text.
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
@@ -122,21 +108,12 @@ class CredCard : FrameLayout {
         }
 
         hintString.joinToString("").let {
-            // Draw the text.
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
                 paddingTop + (contentHeight + textHeight) / 2,
                 hintPaint!!
             )
-        }
-
-        exampleDrawable?.let {
-            it.setBounds(
-                paddingLeft, paddingTop,
-                paddingLeft + contentWidth, paddingTop + contentHeight
-            )
-            it.draw(canvas)
         }
     }
 
