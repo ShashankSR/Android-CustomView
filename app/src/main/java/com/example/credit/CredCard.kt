@@ -40,22 +40,35 @@ class CredCard : FrameLayout {
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         // Load attributes
-        val a = context.obtainStyledAttributes(
+        val attr = context.obtainStyledAttributes(
             attrs, R.styleable.CredCard, defStyle, 0
         )
-        init()
-        this.exampleString = ""
-        this.exampleColor = a.getColor(
-            R.styleable.CredCard_exampleColor,
-            this.exampleColor
-        )
 
-        this.exampleDimension = a.getDimension(
-            R.styleable.CredCard_exampleDimension,
-            this.exampleDimension
-        )
+        attr.let {
+            exampleString = ""
+            exampleColor = it.getColor(
+                R.styleable.CredCard_exampleColor,
+                exampleColor
+            )
 
-        a.recycle()
+            exampleDimension = it.getDimension(
+                R.styleable.CredCard_exampleDimension,
+                exampleDimension
+            )
+
+            it.recycle()
+        }
+
+        isFocusable = true
+        isFocusableInTouchMode = true
+        setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                if (event.action == KeyEvent.ACTION_DOWN) {
+                    setChar(keyCode, event)
+                }
+                return false
+            }
+        })
 
         textPaint = TextPaint().apply {
             flags = Paint.ANTI_ALIAS_FLAG
@@ -71,12 +84,12 @@ class CredCard : FrameLayout {
 
     private fun invalidateTextPaintAndMeasurements() {
         textPaint?.let {
-            it.textSize = this.exampleDimension
+            it.textSize = exampleDimension
             it.color = Color.BLACK
             it.typeface = Typeface.create("Arial", Typeface.BOLD)
         }
         hintPaint?.let {
-            it.textSize = this.exampleDimension
+            it.textSize = exampleDimension
             it.color = Color.GRAY
             it.typeface = Typeface.create("Arial", Typeface.BOLD)
         }
@@ -90,7 +103,7 @@ class CredCard : FrameLayout {
         val paddingBottom = paddingBottom
         val contentHeight = height - paddingTop - paddingBottom
 
-        this.exampleString.let {
+        exampleString.let {
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
@@ -121,19 +134,6 @@ class CredCard : FrameLayout {
         return fic
     }
 
-    private fun init() {
-        isFocusable = true
-        isFocusableInTouchMode = true
-        setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
-                if (event.getAction() === KeyEvent.ACTION_DOWN) {
-                    setChar(keyCode, event)
-                }
-                return false
-            }
-        })
-    }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         super.onTouchEvent(event)
         if (event.action == MotionEvent.ACTION_DOWN) {
@@ -145,13 +145,13 @@ class CredCard : FrameLayout {
 
     fun setChar(keyCode: Int, event: KeyEvent) {
         if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9 && exampleString.length < 16) {
-            this.exampleString = this.exampleString + event.getUnicodeChar().toChar()
+            exampleString = exampleString + event.getUnicodeChar().toChar()
             hintString[exampleString.length - 1] = '1'
             invalidate()
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
             if (exampleString.isNotEmpty()) {
                 hintString[exampleString.length - 1] = '0'
-                this.exampleString = this.exampleString.substring(0, (this.exampleString.length - 1))
+                exampleString = exampleString.substring(0, (exampleString.length - 1))
             } else {
                 hintString[0] = '0'
             }
