@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.text.InputType
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -26,8 +25,6 @@ class CredCard : FrameLayout {
     private var hintString = Array(16) { '0' }
     private var hintPaint: TextPaint? = null
     private var textPaint: TextPaint? = null
-    private var textWidth: Float = 0f
-    private var textHeight: Float = 0f
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -52,8 +49,7 @@ class CredCard : FrameLayout {
             R.styleable.CredCard_exampleColor,
             this.exampleColor
         )
-        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-        // values that should fall on pixel boundaries.
+
         this.exampleDimension = a.getDimension(
             R.styleable.CredCard_exampleDimension,
             this.exampleDimension
@@ -61,7 +57,6 @@ class CredCard : FrameLayout {
 
         a.recycle()
 
-        // Set up a default TextPaint object
         textPaint = TextPaint().apply {
             flags = Paint.ANTI_ALIAS_FLAG
             textAlign = Paint.Align.LEFT
@@ -71,7 +66,6 @@ class CredCard : FrameLayout {
             flags = Paint.ANTI_ALIAS_FLAG
             textAlign = Paint.Align.LEFT
         }
-        // Update TextPaint and text measurements from attributes
         invalidateTextPaintAndMeasurements()
     }
 
@@ -79,14 +73,12 @@ class CredCard : FrameLayout {
         textPaint?.let {
             it.textSize = this.exampleDimension
             it.color = Color.BLACK
-            textWidth = it.measureText(this.exampleString)
-            textHeight = it.fontMetrics.bottom
-            it.typeface = Typeface.create("Arial", Typeface.ITALIC)
+            it.typeface = Typeface.create("Arial", Typeface.BOLD)
         }
         hintPaint?.let {
             it.textSize = this.exampleDimension
             it.color = Color.GRAY
-            it.typeface = Typeface.create("Arial", Typeface.ITALIC)
+            it.typeface = Typeface.create("Arial", Typeface.BOLD)
         }
     }
 
@@ -102,7 +94,7 @@ class CredCard : FrameLayout {
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
-                paddingTop + (contentHeight + textHeight) / 2,
+                (paddingTop + contentHeight / 2).toFloat(),
                 textPaint!!
             )
         }
@@ -111,7 +103,7 @@ class CredCard : FrameLayout {
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
-                paddingTop + (contentHeight + textHeight) / 2,
+                (paddingTop + contentHeight / 2).toFloat(),
                 hintPaint!!
             )
         }
