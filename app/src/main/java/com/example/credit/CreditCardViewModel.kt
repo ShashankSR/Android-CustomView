@@ -40,9 +40,34 @@ class CreditCardViewModel : ViewModel() {
         handleInputText(text)
     }
 
-    private fun handleInputText(text: String) {
-
+    private fun handleInputText(inputString: String) {
+        if (inputString.length < 16) {
+            inputText.value = formatInputString(inputString)
+            hintText.value = formatHintString(inputString.length)
+        }
     }
+
+    private fun formatInputString(inputString: String): String =
+        StringBuilder().apply {
+            for (i in 0 until inputString.length) {
+                append(inputString[i])
+                if (i % 4 == 0) {
+                    append('\t')
+                }
+            }
+        }.toString()
+
+    private fun formatHintString(inputStringLength: Int) =
+        StringBuilder().apply {
+            for (i in 0 until 16) {
+                if (i > inputStringLength) {
+                    append('1')
+                } else {
+                    append('0')
+                }
+            }
+        }.toString()
+
 
     fun isValidCard(cardNumber: String): Boolean {
         var sum = 0
