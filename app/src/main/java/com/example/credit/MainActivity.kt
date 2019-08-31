@@ -7,14 +7,13 @@ import com.example.credit.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    val creditCardViewModel = CreditCardViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DataBindingUtil.setContentView<ActivityMainBinding>(
             this, R.layout.activity_main
         ).apply {
-            credViewModel = creditCardViewModel
+            credViewModel = CreditCardViewModel(resources)
             lifecycleOwner = this@MainActivity
         }
     }

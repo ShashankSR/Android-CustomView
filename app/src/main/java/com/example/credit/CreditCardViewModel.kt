@@ -1,12 +1,14 @@
 package com.example.credit
 
+import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.util.regex.Pattern
 
-class CreditCardViewModel : ViewModel(), CredCardTextView.CreditCardInterface {
+class CreditCardViewModel(val resources: Resources) : ViewModel(),
+    CredCardTextView.CreditCardInterface {
 
-    val hintText = MutableLiveData<String>()
+    val hintText = MutableLiveData<String>().apply { value = "XXXXXXXXXXXXXXXX" }
     val inputText = MutableLiveData<String>()
     val imageSource = MutableLiveData<Int>().apply { value = R.drawable.ic_credit_card }
     val errorText = MutableLiveData<String>()
@@ -35,14 +37,22 @@ class CreditCardViewModel : ViewModel(), CredCardTextView.CreditCardInterface {
                 imageSource.value = R.drawable.ic_credit_card
             }
         }
-        if (input.length == 19) {
-            errorText.value = if (isValidCard(input)) "Error " else ""
+        if (input.length == 16) {
+            errorText.value =
+                if (!isValidCard(input)) {
+                    imageSource.value = R.drawable.ic_credit_card
+                    resources.getString(R.string.card_not_found)
+                } else {
+                    ""
+                }
+        } else if (errorText.value?.isEmpty() == false) {
+            errorText.value = ""
         }
         handleInputText(input)
     }
 
     private fun handleInputText(inputString: String) {
-        if (inputString.length < 16) {
+        if (inputString.length <= 16) {
             inputText.value = formatInputString(inputString)
             hintText.value = formatHintString(inputString.length)
         }
@@ -84,15 +94,16 @@ class CreditCardViewModel : ViewModel(), CredCardTextView.CreditCardInterface {
         return sum % 10 == 0
     }
 
+    // Regex referred from https://stackoverflow.com/questions/72768/how-do-you-detect-credit-card-type-based-on-number
     enum class CardType {
 
         UNKNOWN,
-        VISA("^4[0-9]{12}(?:[0-9]{3}){0,2}$"),
-        MASTERCARD("^(?:5[1-5]|2(?!2([01]|20)|7(2[1-9]|3))[2-7])\\d{14}$"),
-        AMERICAN_EXPRESS("^3[47][0-9]{13}$"),
-        DINERS_CLUB("^3(?:0[0-5]\\d|095|6\\d{0,2}|[89]\\d{2})\\d{12,15}$"),
-        DISCOVER("^6(?:011|[45][0-9]{2})[0-9]{12}$"),
-        JCB("^(?:2131|1800|35\\d{3})\\d{11}$");
+        VISA("^4[0-9]{6,}\$"),
+        MASTERCARD("^5[1-5][0-9]{5,}|222[1-9][0-9]{3,}|22[3-9][0-9]{4,}|2[3-6][0-9]{5,}|27[01][0-9]{4,}|2720[0-9]{3,}\$"),
+        AMERICAN_EXPRESS("^3[47][0-9]{0,}\$"),
+        DINERS_CLUB("^3(?:0[0-5]|[68][0-9])[0-9]{4,}\$"),
+        DISCOVER("^6(?:011|5[0-9]{2})[0-9]{3,}\$"),
+        JCB("^(?:2131|1800|35[0-9]{3})[0-9]{3,}\$");
 
         private var pattern: Pattern? = null
 

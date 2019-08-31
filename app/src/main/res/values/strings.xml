@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">credit</string>
     <string name="cd_credit_logo">Credit Card Logo</string>
+    <string name="card_not_found">Card info not found</string>
 </resources>
