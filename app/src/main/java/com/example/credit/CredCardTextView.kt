@@ -10,18 +10,16 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.BaseInputConnection
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 
-class CredCard : FrameLayout {
+class CredCardTextView : FrameLayout {
 
-    private var exampleString: String = ""
-    private var exampleColor: Int = Color.RED
-    private var exampleDimension: Float = 0f
+    private var inputString: String = ""
+    private var inputDimension: Float = 0f
     private var hintString = Array(16) { '0' }
     private var hintPaint: TextPaint? = null
     private var textPaint: TextPaint? = null
@@ -34,64 +32,46 @@ class CredCard : FrameLayout {
         init(attrs, 0)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         init(attrs, defStyle)
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
-        // Load attributes
-        val attr = context.obtainStyledAttributes(
-            attrs, R.styleable.CredCard, defStyle, 0
+        val attr = context.obtainStyledAttributes(attrs, R.styleable.CredCardTextView, defStyle, 0)
+        inputDimension = attr.getDimension(
+            R.styleable.CredCardTextView_exampleDimension,
+            inputDimension
         )
+        attr.recycle()
 
-        attr.let {
-            exampleString = ""
-            exampleColor = it.getColor(
-                R.styleable.CredCard_exampleColor,
-                exampleColor
-            )
-
-            exampleDimension = it.getDimension(
-                R.styleable.CredCard_exampleDimension,
-                exampleDimension
-            )
-
-            it.recycle()
-        }
 
         isFocusable = true
         isFocusableInTouchMode = true
-        setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
-                if (event.action == KeyEvent.ACTION_DOWN) {
-                    setChar(keyCode, event)
-                }
-                return false
+        setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                setChar(keyCode, event)
             }
-        })
+            false
+        }
 
         textPaint = TextPaint().apply {
             flags = Paint.ANTI_ALIAS_FLAG
             textAlign = Paint.Align.LEFT
+            textSize = inputDimension
+            color = Color.BLACK
+            typeface = Typeface.MONOSPACE
         }
 
         hintPaint = TextPaint().apply {
             flags = Paint.ANTI_ALIAS_FLAG
             textAlign = Paint.Align.LEFT
-        }
-        invalidateTextPaintAndMeasurements()
-    }
-
-    private fun invalidateTextPaintAndMeasurements() {
-        textPaint?.let {
-            it.textSize = exampleDimension
-            it.color = Color.BLACK
-            it.typeface = Typeface.create("Arial", Typeface.BOLD)
-        }
-        hintPaint?.let {
-            it.textSize = exampleDimension
-            it.color = Color.GRAY
-            it.typeface = Typeface.create("Arial", Typeface.BOLD)
+            textSize = inputDimension
+            color = Color.GRAY
+            typeface = Typeface.MONOSPACE
         }
     }
 
@@ -100,14 +80,13 @@ class CredCard : FrameLayout {
 
         val paddingLeft = paddingLeft
         val paddingTop = paddingTop
-        val paddingBottom = paddingBottom
-        val contentHeight = height - paddingTop - paddingBottom
+        val contentHeight = height - paddingTop/2
 
-        exampleString.let {
+        inputString.let {
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
-                (paddingTop + contentHeight / 2).toFloat(),
+                contentHeight.toFloat(),
                 textPaint!!
             )
         }
@@ -116,7 +95,7 @@ class CredCard : FrameLayout {
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
-                (paddingTop + contentHeight / 2).toFloat(),
+                contentHeight.toFloat(),
                 hintPaint!!
             )
         }
@@ -143,15 +122,15 @@ class CredCard : FrameLayout {
         return true
     }
 
-    fun setChar(keyCode: Int, event: KeyEvent) {
-        if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9 && exampleString.length < 16) {
-            exampleString = exampleString + event.getUnicodeChar().toChar()
-            hintString[exampleString.length - 1] = '1'
+    private fun setChar(keyCode: Int, event: KeyEvent) {
+        if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9 && inputString.length < 16) {
+            inputString = inputString + event.getUnicodeChar().toChar()
+            hintString[inputString.length - 1] = '1'
             invalidate()
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-            if (exampleString.isNotEmpty()) {
-                hintString[exampleString.length - 1] = '0'
-                exampleString = exampleString.substring(0, (exampleString.length - 1))
+            if (inputString.isNotEmpty()) {
+                hintString[inputString.length - 1] = '0'
+                inputString = inputString.substring(0, (inputString.length - 1))
             } else {
                 hintString[0] = '0'
             }
