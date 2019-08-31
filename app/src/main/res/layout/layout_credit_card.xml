@@ -36,7 +36,7 @@
                 app:layout_constraintVertical_bias="0.2"
                 bind:hint="@{credViewModel.hintText}"
                 bind:input="@{credViewModel.inputText}"
-                bind:onTextChanged="@{credViewModel.onTextChanged()}" />
+                bind:onTextChanged="@{credViewModel::onTextChanged}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

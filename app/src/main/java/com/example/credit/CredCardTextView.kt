@@ -24,7 +24,9 @@ class CredCardTextView : FrameLayout {
     private var hintString: String = ""
     private var hintPaint: TextPaint? = null
     private var textPaint: TextPaint? = null
-    private var onTexChanged: ((String) -> Unit)? = null
+    private var onTexChangedListener: CreditCardInterface? = null
+
+    private var tempString: String = ""
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -125,38 +127,45 @@ class CredCardTextView : FrameLayout {
     }
 
     private fun setChar(keyCode: Int, event: KeyEvent) {
-        if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9 && inputString.length < 16) {
-            inputString += event.unicodeChar.toChar()
-            onTexChanged?.invoke(inputString)
+        if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9 && tempString.length < 16) {
+            tempString += event.unicodeChar.toChar()
+            onTexChangedListener?.onTextChanged(tempString)
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-            if (inputString.isNotEmpty()) {
-                inputString = inputString.substring(0, (inputString.length - 1))
-                onTexChanged?.invoke(inputString)
+            if (tempString.isNotEmpty()) {
+                tempString = tempString.substring(0, (tempString.length - 1))
+                onTexChangedListener?.onTextChanged(tempString)
             }
         }
     }
 
-    fun setText(hint: String, input: String) {
-        inputString = input
-        hintString = hint
+    fun setText(hint: String?, input: String?) {
+        inputString = input ?: ""
+        hintString = hint ?: ""
         invalidate()
     }
 
-    fun setOnTextChangedListener(listener: (String) -> Unit) {
-        onTexChanged = listener
+    fun setOnTextChangedListener(listener: CreditCardInterface) {
+        onTexChangedListener = listener
+    }
+
+    interface CreditCardInterface {
+        fun onTextChanged(input: String)
     }
 
     companion object {
 
         @JvmStatic
         @BindingAdapter("bind:hint", "bind:input", requireAll = true)
-        fun bindHintText(view: CredCardTextView, hint: String, input: String) {
+        fun bindHintText(view: CredCardTextView, hint: String?, input: String?) {
             view.setText(hint, input)
         }
 
+        @JvmStatic
         @BindingAdapter("bind:onTextChanged")
-        fun onTexChanged(view: CredCardTextView, listener: (String) -> Unit) {
-            view.setOnTextChangedListener(listener)
+        fun onTexChanged(view: CredCardTextView, listener: CreditCardInterface?) {
+            if (listener != null) {
+                view.setOnTextChangedListener(listener)
+            }
         }
     }
 }

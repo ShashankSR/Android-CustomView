@@ -4,15 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.util.regex.Pattern
 
-class CreditCardViewModel : ViewModel() {
+class CreditCardViewModel : ViewModel(), CredCardTextView.CreditCardInterface {
 
     val hintText = MutableLiveData<String>()
     val inputText = MutableLiveData<String>()
     val imageSource = MutableLiveData<String>()
     val errorText = MutableLiveData<String>()
 
-    fun onTextChanged(text: String) {
-        when (CardType.detect(text)) {
+    override fun onTextChanged(input: String): Unit {
+        when (CardType.detect(input)) {
             CardType.VISA -> {
                 imageSource.value = "Visa"
             }
@@ -34,10 +34,10 @@ class CreditCardViewModel : ViewModel() {
             CardType.UNKNOWN -> {
             }
         }
-        if (text.length == 16) {
-            errorText.value = if (isValidCard(text)) "Error " else ""
+        if (input.length == 19) {
+            errorText.value = if (isValidCard(input)) "Error " else ""
         }
-        handleInputText(text)
+        handleInputText(input)
     }
 
     private fun handleInputText(inputString: String) {
