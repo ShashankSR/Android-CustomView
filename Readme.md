@@ -18,3 +18,5 @@ The further steps / commits that needed to be done are as follows
 [] Add space after 4 digits for both placeholder and input text
 
 Please find the app-debug.apk in the root directory of the project.
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="https://www.flaticon.com/"             title="Flaticon">www.flaticon.com</a></div>

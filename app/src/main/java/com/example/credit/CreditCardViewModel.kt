@@ -8,30 +8,31 @@ class CreditCardViewModel : ViewModel(), CredCardTextView.CreditCardInterface {
 
     val hintText = MutableLiveData<String>()
     val inputText = MutableLiveData<String>()
-    val imageSource = MutableLiveData<String>()
+    val imageSource = MutableLiveData<Int>().apply { value = R.drawable.ic_credit_card }
     val errorText = MutableLiveData<String>()
 
     override fun onTextChanged(input: String): Unit {
         when (CardType.detect(input)) {
             CardType.VISA -> {
-                imageSource.value = "Visa"
+                imageSource.value = R.drawable.ic_visa
             }
             CardType.MASTERCARD -> {
-                imageSource.value = "Master"
+                imageSource.value = R.drawable.ic_mastercard
             }
             CardType.AMERICAN_EXPRESS -> {
-                imageSource.value = "Amex"
+                imageSource.value = R.drawable.ic_american_express
             }
             CardType.DINERS_CLUB -> {
-                imageSource.value = "Diners"
+                imageSource.value = R.drawable.ic_dinners_club
             }
             CardType.DISCOVER -> {
-                imageSource.value = "Discover"
+                imageSource.value = R.drawable.ic_discover
             }
             CardType.JCB -> {
-                imageSource.value = "JCB"
+                imageSource.value = R.drawable.ic_jcb
             }
             CardType.UNKNOWN -> {
+                imageSource.value = R.drawable.ic_credit_card
             }
         }
         if (input.length == 19) {
@@ -51,16 +52,13 @@ class CreditCardViewModel : ViewModel(), CredCardTextView.CreditCardInterface {
         StringBuilder().apply {
             for (i in 0 until inputString.length) {
                 append(inputString[i])
-                if (i % 4 == 0) {
-                    append('\t')
-                }
             }
         }.toString()
 
     private fun formatHintString(inputStringLength: Int) =
         StringBuilder().apply {
             for (i in 0 until 16) {
-                if (i > inputStringLength) {
+                if (i >= inputStringLength) {
                     append('1')
                 } else {
                     append('0')
