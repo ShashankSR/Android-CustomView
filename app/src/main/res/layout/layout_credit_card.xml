@@ -24,21 +24,35 @@
                 android:layout_margin="8dp"
                 android:contentDescription="@string/cd_credit_logo"
                 app:imageResource="@{credViewModel.imageSource}"
+                app:layout_constraintBottom_toTopOf="@+id/credCardTextView"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/ic_american_express" />
 
         <com.example.credit.CredCardTextView
+                android:id="@+id/credCardTextView"
                 style="@style/creditcard"
                 app:exampleDimension="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_logo"
+                app:layout_constraintTop_toBottomOf="@+id/img_logo"
                 app:layout_constraintVertical_bias="0.2"
                 bind:hint="@{credViewModel.hintText}"
                 bind:input="@{credViewModel.inputText}"
                 bind:onTextChanged="@{credViewModel::onTextChanged}" />
 
+        <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:text="@{credViewModel.errorText}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/credCardTextView"
+                tools:text="Invalid number" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

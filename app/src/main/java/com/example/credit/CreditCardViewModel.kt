@@ -59,9 +59,9 @@ class CreditCardViewModel : ViewModel(), CredCardTextView.CreditCardInterface {
         StringBuilder().apply {
             for (i in 0 until 16) {
                 if (i >= inputStringLength) {
-                    append('1')
+                    append('X')
                 } else {
-                    append('0')
+                    append(' ')
                 }
             }
         }.toString()
