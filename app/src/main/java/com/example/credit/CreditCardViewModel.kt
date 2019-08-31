@@ -8,10 +8,39 @@ class CreditCardViewModel : ViewModel() {
 
     val hintText = MutableLiveData<String>()
     val inputText = MutableLiveData<String>()
-    val imageSource = MutableLiveData<Int>()
+    val imageSource = MutableLiveData<String>()
     val errorText = MutableLiveData<String>()
 
-    fun onTextChanged() {
+    fun onTextChanged(text: String) {
+        when (CardType.detect(text)) {
+            CardType.VISA -> {
+                imageSource.value = "Visa"
+            }
+            CardType.MASTERCARD -> {
+                imageSource.value = "Master"
+            }
+            CardType.AMERICAN_EXPRESS -> {
+                imageSource.value = "Amex"
+            }
+            CardType.DINERS_CLUB -> {
+                imageSource.value = "Diners"
+            }
+            CardType.DISCOVER -> {
+                imageSource.value = "Discover"
+            }
+            CardType.JCB -> {
+                imageSource.value = "JCB"
+            }
+            CardType.UNKNOWN -> {
+            }
+        }
+        if (text.length == 16) {
+            errorText.value = if (isValidCard(text)) "Error " else ""
+        }
+        handleInputText(text)
+    }
+
+    private fun handleInputText(text: String) {
 
     }
 
@@ -40,8 +69,7 @@ class CreditCardViewModel : ViewModel() {
         AMERICAN_EXPRESS("^3[47][0-9]{13}$"),
         DINERS_CLUB("^3(?:0[0-5]\\d|095|6\\d{0,2}|[89]\\d{2})\\d{12,15}$"),
         DISCOVER("^6(?:011|[45][0-9]{2})[0-9]{12}$"),
-        JCB("^(?:2131|1800|35\\d{3})\\d{11}$"),
-        CHINA_UNION_PAY("^62[0-9]{14,17}$");
+        JCB("^(?:2131|1800|35\\d{3})\\d{11}$");
 
         private var pattern: Pattern? = null
 
