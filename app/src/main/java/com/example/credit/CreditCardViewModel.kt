@@ -14,8 +14,21 @@ class CreditCardViewModel : ViewModel() {
 
     }
 
-    fun isValidCard() {
-
+    fun isValidCard(cardNumber: String): Boolean {
+        var sum = 0
+        var alternate = false
+        for (i in cardNumber.length - 1 downTo 0) {
+            var n = Integer.parseInt(cardNumber.substring(i, i + 1))
+            if (alternate) {
+                n *= 2
+                if (n > 9) {
+                    n = n % 10 + 1
+                }
+            }
+            sum += n
+            alternate = !alternate
+        }
+        return sum % 10 == 0
     }
 
     fun updateCardType() {
