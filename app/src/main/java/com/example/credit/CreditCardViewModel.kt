@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.util.regex.Pattern
 
+
 class CreditCardViewModel(val resources: Resources) : ViewModel(),
     CredCardTextView.CreditCardInterface {
 
@@ -14,7 +15,8 @@ class CreditCardViewModel(val resources: Resources) : ViewModel(),
     val errorText = MutableLiveData<String>()
 
     override fun onTextChanged(input: String): Unit {
-        when (CardType.detect(input)) {
+        val cardType = CardType.detect(input)
+        when (cardType) {
             CardType.VISA -> {
                 imageSource.value = R.drawable.ic_visa
             }
@@ -48,22 +50,37 @@ class CreditCardViewModel(val resources: Resources) : ViewModel(),
         } else if (errorText.value?.isEmpty() == false) {
             errorText.value = ""
         }
-        handleInputText(input)
+        handleInputText(input, cardType)
     }
 
-    private fun handleInputText(inputString: String) {
+    private fun handleInputText(inputString: String, cardType: CardType) {
         if (inputString.length <= 16) {
-            inputText.value = formatInputString(inputString)
-            hintText.value = formatHintString(inputString.length)
+            val hintValue = formatHintString(inputString.length)
+            when (cardType) {
+                CardType.VISA -> {
+                    inputText.value = formatForMaster(inputString)
+                    hintText.value = formatForMaster(hintValue)
+                }
+                CardType.MASTERCARD -> {
+                    inputText.value = formatForMaster(inputString)
+                    hintText.value = formatForMaster(hintValue)
+                }
+                CardType.AMERICAN_EXPRESS -> {
+                    inputText.value = formatForAmex(inputString)
+                    hintText.value = formatForAmex(hintValue)
+                }
+                CardType.DINERS_CLUB -> {
+                    inputText.value = formatForAmex(inputString)
+                    hintText.value = formatForAmex(hintValue)
+                }
+                else -> {
+                    inputText.value = inputString
+                    hintText.value = hintValue
+                }
+            }
+
         }
     }
-
-    private fun formatInputString(inputString: String): String =
-        StringBuilder().apply {
-            for (i in 0 until inputString.length) {
-                append(inputString[i])
-            }
-        }.toString()
 
     private fun formatHintString(inputStringLength: Int) =
         StringBuilder().apply {
@@ -76,8 +93,27 @@ class CreditCardViewModel(val resources: Resources) : ViewModel(),
             }
         }.toString()
 
+    private fun formatForMaster(input: String) =
+        StringBuilder().apply {
+            for (i in 0 until input.length) {
+                if (i % 4 == 0 && i != 0) {
+                    append(" ")
+                }
+                append(input[i])
+            }
+        }.toString()
 
-    fun isValidCard(cardNumber: String): Boolean {
+    private fun formatForAmex(input: String) =
+        StringBuilder().apply {
+            for (i in 0 until input.length) {
+                if (i == 4 || i == 10) {
+                    append(" ")
+                }
+                append(input[i])
+            }
+        }.toString()
+
+    private fun isValidCard(cardNumber: String): Boolean {
         var sum = 0
         var alternate = false
         for (i in cardNumber.length - 1 downTo 0) {
