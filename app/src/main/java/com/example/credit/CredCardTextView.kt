@@ -15,14 +15,16 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import androidx.databinding.BindingAdapter
 
 class CredCardTextView : FrameLayout {
 
     private var inputString: String = ""
     private var inputDimension: Float = 0f
-    private var hintString = Array(16) { '0' }
+    private var hintString: String = ""
     private var hintPaint: TextPaint? = null
     private var textPaint: TextPaint? = null
+    private var onTexChanged: ((String) -> Unit)? = null
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -80,7 +82,7 @@ class CredCardTextView : FrameLayout {
 
         val paddingLeft = paddingLeft
         val paddingTop = paddingTop
-        val contentHeight = height - paddingTop/2
+        val contentHeight = height - paddingTop / 2
 
         inputString.let {
             canvas.drawText(
@@ -91,7 +93,7 @@ class CredCardTextView : FrameLayout {
             )
         }
 
-        hintString.joinToString("").let {
+        hintString.let {
             canvas.drawText(
                 it,
                 paddingLeft.toFloat(),
@@ -124,17 +126,37 @@ class CredCardTextView : FrameLayout {
 
     private fun setChar(keyCode: Int, event: KeyEvent) {
         if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9 && inputString.length < 16) {
-            inputString += event.getUnicodeChar().toChar()
-            hintString[inputString.length - 1] = '1'
-            invalidate()
+            inputString += event.unicodeChar.toChar()
+            onTexChanged?.invoke(inputString)
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
             if (inputString.isNotEmpty()) {
-                hintString[inputString.length - 1] = '0'
                 inputString = inputString.substring(0, (inputString.length - 1))
-            } else {
-                hintString[0] = '0'
+                onTexChanged?.invoke(inputString)
             }
-            invalidate()
+        }
+    }
+
+    fun setText(hint: String, input: String) {
+        inputString = input
+        hintString = hint
+        invalidate()
+    }
+
+    fun setOnTextChangedListener(listener: (String) -> Unit) {
+        onTexChanged = listener
+    }
+
+    companion object {
+
+        @JvmStatic
+        @BindingAdapter("bind:hint", "bind:input", requireAll = true)
+        fun bindHintText(view: CredCardTextView, hint: String, input: String) {
+            view.setText(hint, input)
+        }
+
+        @BindingAdapter("bind:onTextChanged")
+        fun onTexChanged(view: CredCardTextView, listener: (String) -> Unit) {
+            view.setOnTextChangedListener(listener)
         }
     }
 }
