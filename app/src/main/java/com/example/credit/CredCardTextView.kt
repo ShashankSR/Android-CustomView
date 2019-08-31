@@ -62,7 +62,7 @@ class CredCardTextView : FrameLayout {
             flags = Paint.ANTI_ALIAS_FLAG
             textAlign = Paint.Align.LEFT
             textSize = inputDimension
-            color = Color.BLACK
+            color = Color.WHITE
             typeface = Typeface.MONOSPACE
         }
 
@@ -124,7 +124,7 @@ class CredCardTextView : FrameLayout {
 
     private fun setChar(keyCode: Int, event: KeyEvent) {
         if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9 && inputString.length < 16) {
-            inputString = inputString + event.getUnicodeChar().toChar()
+            inputString += event.getUnicodeChar().toChar()
             hintString[inputString.length - 1] = '1'
             invalidate()
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
