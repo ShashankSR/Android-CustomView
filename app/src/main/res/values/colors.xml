@@ -3,4 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="loader_ripple">#0099CC</color>
+    <color name="loader_center">#520099CC</color>
+    <color name="loader_glow">#FFDCC3</color>
 </resources>

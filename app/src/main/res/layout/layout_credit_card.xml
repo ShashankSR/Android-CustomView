@@ -31,7 +31,7 @@
 
         <com.example.credit.CredCardTextView
                 android:id="@+id/credCardTextView"
-                style="@style/creditcard"
+                style="@style/CreditCard"
                 app:exampleDimension="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -39,9 +39,9 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_logo"
                 app:layout_constraintVertical_bias="0.2"
+                bind:onTextChanged="@{credViewModel::onTextChanged}"
                 bind:hint="@{credViewModel.hintText}"
-                bind:input="@{credViewModel.inputText}"
-                bind:onTextChanged="@{credViewModel::onTextChanged}" />
+                bind:input="@{credViewModel.inputText}"/>
 
         <TextView
                 android:id="@+id/textView"

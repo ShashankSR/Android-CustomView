@@ -9,7 +9,7 @@ import java.util.regex.Pattern
 class CreditCardViewModel(val resources: Resources) : ViewModel(),
     CredCardTextView.CreditCardInterface {
 
-    val hintText = MutableLiveData<String>().apply { value = "XXXXXXXXXXXXXXXX" }
+    val hintText = MutableLiveData<String>().apply { value = "XXXX XXXX XXXX XXXX" }
     val inputText = MutableLiveData<String>()
     val imageSource = MutableLiveData<Int>().apply { value = R.drawable.ic_credit_card }
     val errorText = MutableLiveData<String>()

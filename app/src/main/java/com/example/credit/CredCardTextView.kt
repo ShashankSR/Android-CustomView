@@ -55,7 +55,7 @@ class CredCardTextView : FrameLayout {
 
         isFocusable = true
         isFocusableInTouchMode = true
-        setOnKeyListener { v, keyCode, event ->
+        setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN) {
                 setChar(keyCode, event)
             }
@@ -74,9 +74,10 @@ class CredCardTextView : FrameLayout {
             flags = Paint.ANTI_ALIAS_FLAG
             textAlign = Paint.Align.LEFT
             textSize = inputDimension
-            color = Color.GRAY
+            color = Color.WHITE
             typeface = Typeface.MONOSPACE
         }
+        setWillNotDraw(false)
     }
 
     override fun onDraw(canvas: Canvas) {

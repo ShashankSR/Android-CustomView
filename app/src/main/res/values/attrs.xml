@@ -1,4 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <declare-styleable name="RippleLoader">
+        <attr name="ripple_loader_strokeWidth" format="dimension" />
+        <attr name="ripple_loader_radius" format="dimension" />
+        <attr name="ripple_loader_scale" format="float" />
+    </declare-styleable>
+
     <declare-styleable name="CredCardTextView">
         <attr name="exampleString" format="string"/>
         <attr name="exampleDimension" format="dimension"/>
